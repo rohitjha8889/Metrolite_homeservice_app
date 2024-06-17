@@ -1,0 +1,138 @@
+import { View, Text, Dimensions, Image } from 'react-native';
+import React, {useContext} from 'react'
+import Carousel from 'react-native-reanimated-carousel';
+import { DataContext } from '../Data/DataContext';
+
+const Slider = ({ discountedSlider }) => {
+    const width = Dimensions.get('window').width - 50;
+    const {IP_ADDRESS} = useContext(DataContext)
+    
+    return (
+        <View style={{ flex: 1, overflow: 'hidden', marginTop: 20 }}
+        pointerEvents="box-none"
+    >
+        <Carousel
+            loop
+            width={width}
+            height={width / 2}
+            autoPlay={true}
+            data={discountedSlider}
+            scrollAnimationDuration={500}
+            autoPlayInterval={10000}
+            renderItem={({ item }) => (
+                <View style={{ flex: 1 }}>
+                    <Image
+                        source={{ uri: `${IP_ADDRESS}/allposter/${item.poster}` }}
+                        style={{
+                            flex: 1,
+                            resizeMode: 'cover',
+                            justifyContent: 'center',
+                        }}
+                    />
+                </View>
+            )}
+        />
+        <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} pointerEvents="none" />
+    </View>
+    );
+}
+
+export default Slider;
+
+
+
+
+// import { View, Text, Dimensions, Image } from 'react-native';
+// import React, {useContext} from 'react'
+// import Carousel from 'react-native-reanimated-carousel';
+// import { DataContext } from '../Data/DataContext';
+
+// const Slider = ({ discountedSlider }) => {
+//     const width = Dimensions.get('window').width - 50;
+//     const {IP_ADDRESS} = useContext(DataContext)
+    
+//     return (
+//         <View style={{ flex: 1, overflow: 'hidden', marginTop: 20}}
+//         pointerEvents="box-none"
+//     >
+//         <Carousel
+//             loop
+//             width={width}
+//             height={width / 2.2}
+//             autoPlay={true}
+//             data={discountedSlider}
+//             scrollAnimationDuration={500}
+//             autoPlayInterval={5000}
+//             renderItem={({ item }) => (
+//                 <View style={{ flex: 1 }}>
+//                     <Image
+//                         source={{ uri: `${IP_ADDRESS}/allposter/${item.poster}` }}
+//                         style={{
+//                             flex: 1,
+//                             resizeMode: 'stretch',
+//                             justifyContent: 'center',
+//                             borderRadius:5
+//                         }}
+//                     />
+//                 </View>
+//             )}
+//         />
+//         <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} pointerEvents="none" />
+//     </View>
+//     );
+// }
+
+// export default Slider;
+
+
+
+
+Whats api 
+
+const sendOrderMessafeAdmin = async(newData) => {
+    const adminMobileNumber = await fetchMobileNumber();
+    const Name = newData.userDetail.userName
+    const Address = `${newData.addressDetail.addressLine1}, ${newData.addressDetail.addressLine2}, ${newData.addressDetail.city}, ${newData.addressDetail.state}, ${newData.addressDetail.pincode}`;
+
+    const totalAmount = `₹${newData.totalPriceWithSlot}`;
+
+    const timeSlot = `${newData.orderTimeSlot}, ${newData.serviceDate}`;
+
+    const customerPhone = newData.userDetail.phone
+
+    const serviceDetail = newData.allOrderedCart.map(item => `${item.productName} -  ${item.quantity}`).join('\n');
+
+    // console.log(Name, Address, totalAmount, timeSlot)
+    const options = {
+      method: 'POST',
+      headers: {
+        'content-type': 'text/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxOTQ5NmMzYy05MWU0LTRiYmItYWU1Ny0zYzdiNjgwN2I2NGYiLCJ1bmlxdWVfbmFtZSI6ImluZm9AbWV0cm9saXRlc29sdXRpb25zLmNvbSIsIm5hbWVpZCI6ImluZm9AbWV0cm9saXRlc29sdXRpb25zLmNvbSIsImVtYWlsIjoiaW5mb0BtZXRyb2xpdGVzb2x1dGlvbnMuY29tIiwiYXV0aF90aW1lIjoiMDUvMTAvMjAyNCAwNzo1OTozNyIsImRiX25hbWUiOiJtdC1wcm9kLVRlbmFudHMiLCJ0ZW5hbnRfaWQiOiIxMDA5NzEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBRE1JTklTVFJBVE9SIiwiZXhwIjoyNTM0MDIzMDA4MDAsImlzcyI6IkNsYXJlX0FJIiwiYXVkIjoiQ2xhcmVfQUkifQ.CS26KZTZ7q_X0RNEb6PR8NphmOAGEe-F2rvunusdt50'
+      },
+      body: JSON.stringify({
+        broadcast_name: 'homeservice_admin',
+        parameters: [
+          { name: 'name', value: Name },
+          { name: 'address', value: Address },
+          { name: 'total_cart_price', value: totalAmount },
+          { name: 'service_time', value: timeSlot },
+          { name: 'service_detail', value: serviceDetail },
+          { name: 'customer_phone', value: customerPhone },
+          
+        ],
+
+
+        template_name: 'homeservice_admin'
+      })
+    };
+
+   
+
+    fetch(`https://live-mt-server.wati.io/100971/api/v1/sendTemplateMessage?whatsappNumber=${adminMobileNumber}`, options)
+      .then(response => response.json())
+      // .then(response => console.log(response))
+      .catch(err => console.error(err));
+  }
+
+
+
